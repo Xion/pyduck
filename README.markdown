@@ -17,13 +17,13 @@ As an example, consider the following code:
     except Exception:
         logging.exception("Error occured")
 
-Here <code>some_object</code> has been received from the outside and two operations are being executed on it
+Here <code>some\_object</code> has been received from the outside and two operations are being executed on it
 without checking whether relevant method are actually available. Since possible exceptions are being caught
 (particularly the <code>AttributeError</code>), this doesn't seem to be a problem in most cases.
-If, however, there is a possibility for <code>some_object</code> to support first operation and not second,
-executing <code>perform_first_operation</code> might commit some irreversible actions that leave the system
+If, however, there is a possibility for <code>some\_object</code> to support first operation and not second,
+executing <code>perform\_first\_operation</code> might commit some irreversible changes that leave the system
 in inconsistent state. To prevent that, we would usually need some form of transactions which the above
-code will be executed in. This would not be the case if we could check whether <code>some_object</code>
+code will be executed in. This would not be the case if we could check whether <code>some\_object</code>
 supports both operations we are requesting.
 
 Overview
@@ -32,3 +32,46 @@ _pyduck_ provides means for easy verifying whether a particular object supports 
 perform on it **before** actually attempting them. It does so not by polling for any explicitly declared
 types (<code>isinstance</code>/<code>issubclass</code>) but by checking if object implements a particular
 **interface**.
+An interface is simply a specification of methods an object should have in order to be considered as
+an implementation of that interface. The important note is that object does _not_ need to explicitly
+declare that it implements an interface - it only needs to actually have those particular methods.
+
+This is somewhat similar to the interface/implementation model used by the Go language.
+
+Examples
+-
+Consider the canonical pythonic example of duck typing: the file-like object. If we expect to receive
+such object and use its <code>read</code>, we can define an interface for it:
+
+    import pyduck
+
+    class ReadableFileLike(object):
+        __metaclass__ = pyduck.InterfaceMeta
+        def read(self): pass
+
+It can then be used to verify whether particular object satisfies our conditions:
+
+    def load(file_obj):
+        if not pyduck.implements(file_obj, ReadableFileLike):
+            raise TypeError, "Readable file-like object expected"
+        # ...
+
+Of course this particular example isn't very impressive as it's essentially a wrapped <code>hasattr</code>
+call. But we could define a more strict specification that also enforces a particular method signature:
+
+    class Parser(object):
+        __metaclass__ = pyduck.InterfaceMeta
+        def load(self, file_obj): pass
+        def dump(self, data, file_obj, **kwargs): pass
+
+    def serialize_data(parser):
+        if pyduck.implements(parser, Parser):
+            file_obj = open("file.dat", "w")
+            parser.dump(data, file_obj, whitespace=False)
+
+    def deserialize_data(parser):
+        if pyduck.implements(parser, Parser):
+            file_obj = open("file.dat")
+            data = parser.load(file_obj)
+
+... 
