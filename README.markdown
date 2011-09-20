@@ -62,7 +62,7 @@ call. But we could define a more strict specification that also enforces a parti
     class Parser(object):
         __metaclass__ = pyduck.InterfaceMeta
         def load(self, file_obj): pass
-        def dump(self, data, file_obj, **kwargs): pass
+        def dump(self, data, file_obj, kwargs = pyduck.KeywordArgs()): pass
 
     def serialize_data(parser):
         if pyduck.implements(parser, Parser):
@@ -74,4 +74,5 @@ call. But we could define a more strict specification that also enforces a parti
             file_obj = open("file.dat")
             data = parser.load(file_obj)
 
-... 
+_pyduck_ is capable of checking the number of arguments, their kind (normal, variadic, keyword) and whether
+they are optional or not.
