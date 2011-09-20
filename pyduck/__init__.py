@@ -14,9 +14,9 @@ class InterfaceMeta(type):
         
         return type.__new__(meta, class_name, bases, iface_dict)
     
-    def __instancecheck__(meta, instance): #@NoSelf
+    def __instancecheck__(iface, instance): #@NoSelf
         ''' Custom instance checking. Causes isinstance() to verify interface. '''
-        pass
+        return implements(instance, iface)
         
 
 def get_methods(class_dict):
@@ -43,10 +43,10 @@ class Interface(object):
     
 def implements(obj, interface):
     # checking only names of methods now
-    for name, method_obj in interface.__dict__:
+    for name, method_obj in interface.__dict__.iteritems():
         if name.startswith('_'):   continue
         obj_member = getattr(obj, name, None)
-        if not (obj_member and inspect.isfunction(obj_member)):
+        if not (obj_member and inspect.ismethod(obj_member)):
             return False
         
     return True

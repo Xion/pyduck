@@ -14,6 +14,5 @@ class SimpleInterface(pyduck.Interface):
     def method(self): pass
 
 
-class ReadableFileLike(object):
-    __metaclass__ = pyduck.InterfaceMeta
+class ReadableFileLike(pyduck.Interface):
     def read(self): pass
