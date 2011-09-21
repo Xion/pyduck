@@ -7,6 +7,7 @@ Created on 2011-09-21
 @author: xion
 '''
 import inspect
+import sys
 
 
 class Method(object):
@@ -22,14 +23,18 @@ class Method(object):
         default_values = default_values or []
         
         self.name = actual_method.func_name
-        self.max_args = len(arg_names)
-        self.min_args = self.max_args - len(default_values)
         self.has_varargs = varargs_name is not None
         self.has_kwargs = kwargs_name is not None
         
+        fixed_arglist = not (self.has_varargs or self.has_kwargs)
+        self.max_args = len(arg_names) if fixed_arglist else None
+        self.min_args = len(arg_names) - len(default_values)
+        
     def conforms_with(self, method):
         ''' Checks whether given method is compatible with method signature
-        described by this very object. '''
+        described by this very object.
+        @note: This relation is NOT symmetrical if optional arguments (incl.
+        *args and **kwargs) are concerned. '''
         if isinstance(method, Method):
             method_obj = method
         elif inspect.ismethod(method):
@@ -38,13 +43,16 @@ class Method(object):
             raise ValueError, "Expected a method, got %r" % method
 
         # check number of arguments
-        self_arg_range = (self.min_args, self.max_args)
-        other_arg_range = (method_obj.min_args, method_obj.max_args)
+        self_arg_range = (self.min_args, self.max_args or sys.maxint)
+        other_arg_range = (method_obj.min_args, method_obj.max_args or sys.maxint)
         if not intervals_overlap(self_arg_range, other_arg_range):
             return False
         
-        if self.has_varargs != method_obj.has_varargs:  return False
-        if self.has_kwargs != method_obj.has_kwargs:    return False
+        # check if other method allows additional args that we don't permit
+        if method_obj.has_varargs and not self.has_varargs:
+            return False
+        if method_obj.has_kwargs and not self.has_kwargs:
+            return False
         
         return True
 

@@ -61,6 +61,11 @@ class MethodSignatureTests(unittest.TestCase):
         class SimpleClassWithOptionalArgs(object):
             def method(self, a = 0): pass
         self.assertTrue(isinstance(SimpleClassWithOptionalArgs, SimpleInterface))
+        
+    def test_varagrs(self):
+        class SimpleInterfaceWithVarargs(Interface):
+            def method(self, *args): pass
+        self.assertTrue(isinstance(SimpleClass(), SimpleInterfaceWithVarargs))
     
     def test_too_many_arguments(self):
         class SimpleClassWithTooManyArgs(object):
