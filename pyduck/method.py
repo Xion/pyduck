@@ -14,12 +14,13 @@ class Method(object):
 
     def __init__(self, actual_method):
         ''' Initializes the object from an actual method. '''
-        if not inspect.ismethod(actual_method):
-            raise ValueError, "Expected a method, got %r" % actual_method
+        if not is_function(actual_method):
+            raise ValueError, "Expected method/function, got %r" % actual_method
         
         arg_spec = inspect.getargspec(actual_method)
         arg_names, varargs_name, kwargs_name, _default_values = arg_spec
         
+        self.name = actual_method.func_name
         self.arg_count = len(arg_names)
         self.has_varargs = varargs_name is not None
         self.has_kwargs = kwargs_name is not None
@@ -39,3 +40,8 @@ class Method(object):
             if getattr(self, criteria, None) != getattr(method_obj, criteria, None):
                 return False
         return True
+
+
+def is_function(func):
+    ''' Generalized check for methods and normal functions. '''
+    return inspect.ismethod(func) or inspect.isfunction(func)

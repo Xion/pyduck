@@ -6,6 +6,7 @@ Created on 2011-09-21
 @author: xion
 '''
 import inspect
+from method import Method
 
 
 class InterfaceMeta(type):
@@ -28,6 +29,8 @@ class InterfaceMeta(type):
             member = getattr(object_or_class, name, None)
             if not (member and inspect.ismethod(member)):
                 return False
+            if not method_obj.conforms_with(member):
+                return False
             
         return True
         
@@ -36,9 +39,9 @@ def get_methods(class_dict):
     return filter(inspect.isfunction, class_dict.itervalues())
 
 def build_iface_dict(methods):
-    res = {}    # just names for now
-    for m in methods:
-        res[m.func_name] = m
+    res = {}
+    for method in methods:
+        res[method.func_name] = Method(method)
     return res
 
 def get_internals(class_dict):

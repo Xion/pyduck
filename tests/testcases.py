@@ -16,16 +16,16 @@ class SimpleClass(object):
 class BasicTests(unittest.TestCase):
     
     def test_basic_interface_by_meta(self):
-        assert implements(SimpleClass(), SimpleInterfaceByMeta)
+        self.assertTrue(implements(SimpleClass(), SimpleInterfaceByMeta))
 
     def test_basic_interface(self):
-        assert implements(SimpleClass(), SimpleInterface)
+        self.assertTrue(implements(SimpleClass(), SimpleInterface))
 
     def test_isinstance_by_meta(self):
-        assert isinstance(SimpleClass(), SimpleInterfaceByMeta)
+        self.assertTrue(isinstance(SimpleClass(), SimpleInterfaceByMeta))
         
     def test_isinstance(self):
-        assert isinstance(SimpleClass(), SimpleInterface)
+        self.assertTrue(isinstance(SimpleClass(), SimpleInterface))
         
         
 class MethodObjectTests(unittest.TestCase):
@@ -38,14 +38,31 @@ class MethodObjectTests(unittest.TestCase):
         Method(obj.method)
     
     def test_non_method(self):
-        def function(): pass
-        self.assertRaises(ValueError, Method, function)
+        x = 1
+        self.assertRaises(ValueError, Method, x)
         
     def test_basic_identity(self):
         method_obj = Method(SimpleClass.method)
         assert method_obj.conforms_with(SimpleClass.method)
+        
+        
+class BasicMethodSignatureTests(unittest.TestCase):
+    
+    def test_too_many_arguments(self):
+        class SimpleClassWithTooManyArgs(object):
+            def method(self, a): pass
+        self.assertFalse(isinstance(SimpleClassWithTooManyArgs, SimpleInterface))
 
+    def test_unwanted_varagrs(self):
+        class SimpleClassWithVarargs(object):
+            def method(self, *args): pass
+        self.assertFalse(isinstance(SimpleClassWithVarargs, SimpleInterface))
 
+    def test_unwanted_kwargs(self):
+        class SimpleClassWithKwargs(object):
+            def method(self, **kwargs): pass
+        self.assertFalse(isinstance(SimpleClassWithKwargs, SimpleInterface))
+            
 
 if __name__ == '__main__':
     unittest.main();
