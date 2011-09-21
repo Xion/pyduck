@@ -55,7 +55,12 @@ class MethodObjectTests(unittest.TestCase):
         self.assertTrue(method_obj.conforms_with(SimpleClass.method))
         
         
-class BasicMethodSignatureTests(unittest.TestCase):
+class MethodSignatureTests(unittest.TestCase):
+    
+    def test_optional_args(self):
+        class SimpleClassWithOptionalArgs(object):
+            def method(self, a = 0): pass
+        self.assertTrue(isinstance(SimpleClassWithOptionalArgs, SimpleInterface))
     
     def test_too_many_arguments(self):
         class SimpleClassWithTooManyArgs(object):
