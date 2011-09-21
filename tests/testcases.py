@@ -43,7 +43,7 @@ class MethodObjectTests(unittest.TestCase):
         
     def test_basic_identity(self):
         method_obj = Method(SimpleClass.method)
-        assert method_obj.conforms_with(SimpleClass.method)
+        self.assertTrue(method_obj.conforms_with(SimpleClass.method))
         
         
 class BasicMethodSignatureTests(unittest.TestCase):

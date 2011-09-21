@@ -30,13 +30,15 @@ Overview
 -
 _pyduck_ provides means for easy verifying whether a particular object supports operations we want to
 perform on it **before** actually attempting them. It does so not by polling for any explicitly declared
-types (<code>isinstance</code>/<code>issubclass</code>) but by checking if object implements a particular
+types (such as superclasses or [abstract base classes][abc]) but by checking if object implements a particular
 **interface**.
 An interface is simply a specification of methods an object should have in order to be considered as
 an implementation of that interface. The important note is that object does _not_ need to explicitly
 declare that it implements an interface - it only needs to actually have those particular methods.
 
-This is somewhat similar to the interface/implementation model used by the Go language.
+This is somewhat similar to the interface model used by the Go language.
+
+[abc]: http://docs.python.org/library/abc.html
 
 Examples
 -
@@ -76,3 +78,5 @@ call. But we could define a more strict specification that also enforces a parti
 
 _pyduck_ is capable of checking the number of arguments, their kind (normal, variadic, keyword) and whether
 they are optional or not.
+
+
