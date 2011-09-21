@@ -1,12 +1,21 @@
+
 '''
 Created on 2011-09-20
 
 @author: xion
 '''
-from pyduck import implements
+from pyduck import implements, Interface
+from pyduck.metaclass import InterfaceMeta
 from pyduck.method import Method
-from tests.interfaces import SimpleInterfaceByMeta, SimpleInterface
 import unittest
+
+
+class SimpleInterfaceByMeta(object):
+    __metaclass__ = InterfaceMeta
+    def method(self): pass
+    
+class SimpleInterface(Interface):
+    def method(self): pass
 
 
 class SimpleClass(object):
