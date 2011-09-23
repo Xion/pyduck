@@ -4,7 +4,7 @@ Created on 2011-09-20
 
 @author: xion
 '''
-from pyduck import implements, Interface, InterfaceMeta
+from pyduck import implements, Interface, InterfaceMeta, expects, Any
 from pyduck.method import Method
 import unittest
 
@@ -80,6 +80,24 @@ class MethodSignatureTests(unittest.TestCase):
         class SimpleClassWithKwargs(object):
             def method(self, **kwargs): pass
         self.assertFalse(isinstance(SimpleClassWithKwargs, SimpleInterface))
+        
+    
+def checked_function(first, second):
+    pass
+        
+class ExpectsDecoratorTests(unittest.TestCase):
+    
+    def test_any(self):
+        decorated = expects(Any, Any)(checked_function)
+        decorated(1, 0)
+        
+    def test_correct_iface_arg(self):
+        decorated = expects(SimpleInterface, Any)(checked_function)
+        decorated(SimpleClass(), 1)
+        
+    def test_incorrect_iface_arg(self):
+        decorated = expects(SimpleInterface, Any)(checked_function)
+        self.assertRaises(TypeError, decorated, (1, 0))
             
 
 if __name__ == '__main__':

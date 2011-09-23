@@ -1,5 +1,5 @@
 '''
-Metaclass for pyduck interfaces.
+Definition of pyduck interfaces' metaclass.
 
 Created on 2011-09-21
 
