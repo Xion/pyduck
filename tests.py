@@ -4,8 +4,7 @@ Created on 2011-09-20
 
 @author: xion
 '''
-from pyduck import implements, Interface
-from pyduck.metaclass import InterfaceMeta
+from pyduck import implements, Interface, InterfaceMeta
 from pyduck.method import Method
 import unittest
 
