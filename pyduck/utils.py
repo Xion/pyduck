@@ -66,6 +66,7 @@ class ExpectedParametersDecorator(object):
         for i, arg in enumerate(args):
             self.arg_spec[i] = arg
         self.arg_spec.update(kwargs)
+        self.is_method = False  # we can't know it yet
     
     def __call__(self, func):
         is_function = inspect.isfunction(func) or inspect.ismethod(func)
@@ -89,25 +90,27 @@ class ExpectedParametersDecorator(object):
         in function call.
         '''
         arg_names, varargs_name, kwargs_name, _ = inspect.getargspec(func)
-        if inspect.ismethod(func):
-            arg_names = arg_names[1:]   # omit "self"
-            
+        if len(arg_names) > 0 and arg_names[0] == 'self':
+            self.is_method = True
+            arg_names = arg_names[1:]   # omit 'self'
+
         if len(arg_names) > len(self.arg_spec):
             raise TypeError, "Expected a function with %s argument(s), found only %s" % (len(self.arg_spec), len(arg_names))
-        
-        new_spec = ArgumentSpec()
-        if varargs_name:    new_spec.allows_varargs = True
-        if kwargs_name:     new_spec.allows_kwargs = True 
-        
+         
         for i, arg_name in enumerate(arg_names):
             arg_type = self.arg_spec.get(i) or self.arg_spec.get(arg_name)
-            new_spec[i] = new_spec[arg_name] = arg_type
+            self.arg_spec[i] = arg_type
+            self.arg_spec[arg_name] = arg_type
             
-        self.arg_spec = new_spec
+        if varargs_name:    self.arg_spec.allows_varargs = True
+        if kwargs_name:     self.arg_spec.allows_kwargs = True
         
     def _validate_arguments(self, varargs, kwargs):
         ''' Checks whether specified arguments of function conform with
         the specification which was passed earlier to the decorator. '''
+        if self.is_method:
+            varargs = varargs[1:]   # omit 'self'
+            
         all_args = itertools.chain(enumerate(varargs), kwargs.iteritems())
         for key, arg in all_args:
             expected = self.arg_spec[key]
