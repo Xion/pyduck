@@ -108,10 +108,18 @@ def flexible_function(arg, *args, **kwargs):
         
 class ExpectsDecoratorTests(unittest.TestCase):
     
+    def test_non_function(self):
+        decorator = expects(Any)
+        self.assertRaises(TypeError, decorator, 1)
+    
     def test_any(self):
         decorator = expects(Any, Any)
         decorated = decorator(normal_function)
         decorated(1, [{'foo':42}])
+        
+    def test_too_short_argspec(self):
+        decorator = expects(Any)
+        self.assertRaises(TypeError, decorator, normal_function)
         
     def test_correct_iface_arg(self):
         decorator = expects(SimpleInterface, Any)
