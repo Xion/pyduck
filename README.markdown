@@ -30,15 +30,33 @@ Overview
 -
 _pyduck_ provides means for easy verifying whether a particular object supports operations we want to
 perform on it **before** actually attempting them. It does so not by polling for any explicitly declared
-types (such as superclasses or [abstract base classes][abc]) but by checking if object implements a particular
-**interface**.
+"markers" (such as standard Python superclasses, or [abstract base classes][abc] registered using
+<code>ABCMeta.register</code>) but by checking if object implements a particular **interface**.
+
 An interface is simply a specification of methods an object should have in order to be considered as
 an implementation of that interface. The important note is that object does _not_ need to explicitly
 declare that it implements an interface - it only needs to actually have those particular methods.
 
-This is somewhat similar to the interface model used by the Go language.
+This is somewhat similar to the interface model used by the Go language. The bottom line is that 
+_no interface has to be explictly declared_ - or even known about! - by the implementor.
 
 [abc]: http://docs.python.org/library/abc.html
+
+Installation
+-
+A (relatively) stable release should be available from [PyPi][pypi]:
+
+    $ sudo easy_install pyduck
+
+If you prefer to use the latest revision, clone the Git repo and install the package in development mode:
+
+    $ git clone git://github.com/Xion/pyduck.git
+    $ cd pyduck
+    $ sudo ./setup.py develop
+
+This allows to <code>git pull</code> changes without having to run <code>setup.py</code> again.  
+
+[pypi]: http://pypi.python.org/pypi/pyduck/
 
 Examples
 -
