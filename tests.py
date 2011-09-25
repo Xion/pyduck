@@ -21,7 +21,7 @@ class SimpleClass(object):
     def method(self): pass
 
 
-class BasicTests(unittest.TestCase):
+class BasicInstanceTests(unittest.TestCase):
     
     def test_basic_interface_by_meta(self):
         self.assertTrue(implements(SimpleClass(), SimpleInterfaceByMeta))
@@ -34,6 +34,21 @@ class BasicTests(unittest.TestCase):
         
     def test_isinstance(self):
         self.assertTrue(isinstance(SimpleClass(), SimpleInterface))
+        
+
+class BasicClassTests(unittest.TestCase):
+    
+    def test_basic_interface_by_meta(self):
+        self.assertTrue(implements(SimpleClass, SimpleInterfaceByMeta))
+        
+    def test_basic_interface(self):
+        self.assertTrue(implements(SimpleClass, SimpleInterface))
+
+    def test_isinstance_by_meta(self):
+        self.assertTrue(isinstance(SimpleClass, SimpleInterfaceByMeta))
+        
+    def test_isinstance(self):
+        self.assertTrue(isinstance(SimpleClass, SimpleInterface))
         
         
 class MethodObjectTests(unittest.TestCase):
