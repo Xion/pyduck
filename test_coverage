@@ -1,0 +1,6 @@
+#!/bin/bash
+
+rm .coverage
+
+python-coverage run ./tests.py
+python-coverage report -m pyduck/*.py
