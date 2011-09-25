@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 
 setup(name = 'pyduck',
-      version = '1.0',
+      version = '0.1',
       description = 'Utility framework for effective use of duck typing via Go-like interfaces',
       long_description = open("README.markdown").read(),
       author = 'Karol Kuczmarski "Xion"',
