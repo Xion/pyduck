@@ -67,8 +67,7 @@ such object and use its <code>read</code>, we can define an interface for it:
 ```python
 import pyduck
 
-class ReadableFileLike(object):
-    __metaclass__ = pyduck.InterfaceMeta
+class ReadableFileLike(pyduck.Interface):
     def read(self): pass
 ```
 
@@ -85,8 +84,7 @@ Of course this particular example isn't very impressive as it's essentially a wr
 call. But we could define a more strict specification that also enforces a particular method signature:
 
 ```python
-class Parser(object):
-    __metaclass__ = pyduck.InterfaceMeta
+class Parser(pyduck.Interface):
     def load(self, file_obj): pass
     def dump(self, data, file_obj, **kwargs): pass
 
