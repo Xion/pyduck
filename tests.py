@@ -15,6 +15,9 @@ class SimpleInterfaceByMeta(object):
     
 class SimpleInterface(Interface):
     def method(self): pass
+    
+class OptArgInterface(Interface):
+    def method(self, arg = 0): pass
 
 
 class SimpleClass(object):
@@ -51,6 +54,22 @@ class BasicClassTests(unittest.TestCase):
         self.assertTrue(isinstance(SimpleClass, SimpleInterface))
         
         
+class AdvancedInterfaceTests(unittest.TestCase):
+    
+    def test_optarg_iface_vs_arg_class(self):
+        class SimpleClassWithArg(object):
+            def method(self, arg): pass
+        self.assertFalse(implements(SimpleClassWithArg, OptArgInterface))
+        
+    def test_optarg_iface_vs_noarg_class(self):
+        self.assertFalse(implements(SimpleClass, OptArgInterface))
+        
+    def test_optarg_iface_vs_optarg_class(self):
+        class SimpleClassWithOptArg(object):
+            def method(self, arg = 1): pass
+        assert implements(SimpleClassWithOptArg, OptArgInterface)
+        
+        
 class MethodObjectTests(unittest.TestCase):
     
     def test_method_of_class(self):
@@ -61,8 +80,7 @@ class MethodObjectTests(unittest.TestCase):
         Method(obj.method)
     
     def test_non_method(self):
-        x = 1
-        self.assertRaises(ValueError, Method, x)
+        self.assertRaises(ValueError, Method, 1)
         
     def test_basic_identity(self):
         method_obj = Method(SimpleClass.method)
@@ -79,7 +97,7 @@ class MethodSignatureTests(unittest.TestCase):
     def test_varagrs(self):
         class SimpleInterfaceWithVarargs(Interface):
             def method(self, *args): pass
-        self.assertTrue(isinstance(SimpleClass(), SimpleInterfaceWithVarargs))
+        self.assertFalse(isinstance(SimpleClass(), SimpleInterfaceWithVarargs))
     
     def test_too_many_arguments(self):
         class SimpleClassWithTooManyArgs(object):

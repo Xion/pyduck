@@ -6,8 +6,8 @@ Created on 2011-09-21
 
 @author: xion
 '''
+from pyduck.utils import Interval, is_function
 import inspect
-import sys
 
 
 class Method(object):
@@ -43,9 +43,9 @@ class Method(object):
             raise ValueError, "Expected a method, got %r" % method
 
         # check number of arguments
-        self_arg_range = (self.min_args, self.max_args or sys.maxint)
-        other_arg_range = (method_obj.min_args, method_obj.max_args or sys.maxint)
-        if not intervals_overlap(self_arg_range, other_arg_range):
+        self_arg_range = Interval(self.min_args, self.max_args)
+        other_arg_range = Interval(method_obj.min_args, method_obj.max_args)
+        if not other_arg_range.contains(self_arg_range):
             return False
         
         # check if other method allows additional args that we don't permit
@@ -55,18 +55,3 @@ class Method(object):
             return False
         
         return True
-
-
-def is_function(func):
-    ''' Generalized check for methods and normal functions. '''
-    return inspect.ismethod(func) or inspect.isfunction(func)
-
-def intervals_overlap(interval1, interval2):
-    ''' Checks whether two intervals overlap.
-    Used for comparing number of mandatory and optional arguments. '''
-    a1, b1 = interval1
-    a2, b2 = interval2
-    
-    first_before_second = b1 < a2
-    second_before_first = b2 < a1
-    return not (first_before_second or second_before_first)
