@@ -1,7 +1,7 @@
 '''
 pyduck
 
-@summary: Utility framework for effective use of duck typing via Go-like interfaces
+@summary: Python implementation of Go-like interfaces for more robust duck typing
 @author: Karol Kuczmarski "Xion" 
 @license: MIT
 '''

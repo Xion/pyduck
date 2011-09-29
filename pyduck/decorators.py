@@ -14,7 +14,9 @@ import itertools
 class Any(object):
     ''' Marker symbol used with decorators.
     Accepts any type of Python object. '''
-    pass
+    class __metaclass__(type):
+        def __instancecheck__(cls, other): #@NoSelf
+            return True
 
 
 ###########################################################
