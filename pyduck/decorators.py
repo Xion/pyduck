@@ -1,6 +1,5 @@
 '''
-Module with convenience utilities for easier usage of
-pyduck interfaces.
+Module with decorators that enhance the functionality of pyduck interfaces.
 
 Created on 2011-09-23
 

@@ -6,4 +6,4 @@ pyduck
 @license: MIT
 '''
 from interface import InterfaceMeta, Interface, implements
-from helpers import expects, Any
+from decorators import expects, Any
