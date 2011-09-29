@@ -59,7 +59,7 @@ This allows to <code>git pull</code> changes without having to run <code>setup.p
 
 [pypi]: http://pypi.python.org/pypi/pyduck/
 
-Examples
+Usage
 -
 Consider the canonical pythonic example of duck typing: the file-like object. If we expect to receive
 such object and use its <code>read</code>, we can define an interface for it:
@@ -101,3 +101,30 @@ def deserialize_data(parser):
 
 _pyduck_ is capable of checking the number of arguments, their kind (normal, variadic, keyword) and whether
 they are optional or not.
+
+### @expects decorator
+
+The obvious downside of using <code>pyduck.implements</code> is adding a lot of boilerplate <code>if</code>s.
+To avoid that, we can apply the <code>@expects</code> decorator to function whose arguments we want to check
+against some interfaces.
+Rewriting the above code using <code>@expects</code> leads to more readable result:
+
+```python
+from pyduck import Interface, expects
+
+class Parser(Interface):
+    def load(self, file_obj): pass
+    def dump(self, data, file_obj, **kwargs): pass
+
+@expects(Parser)
+def serialize_data(parser):
+    file_obj = open("file.dat", "w")
+    parser.dump(data, file_obj, whitespace=False)
+
+@expects(Parser)
+def deserialize_data(parser):
+    file_obj = open("file.dat")
+    data = parser.load(file_obj)
+```
+<code>@expects</code> will check whether function arguments comply to specified _pyduck_ interfaces (or any Python
+types, for that matter). In case of failure, a standard <code>TypeError</code> will be raised.
