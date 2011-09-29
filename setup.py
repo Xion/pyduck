@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 setup(name = 'pyduck',
       version = '0.2',
-      description = 'Utility framework for effective use of duck typing via Go-like interfaces',
+      description = 'Python implementation of Go-like interfaces for more robust duck typing',
       long_description = open("README.markdown").read(),
       author = 'Karol Kuczmarski "Xion"',
       author_email = "karol.kuczmarski@gmail.com",
