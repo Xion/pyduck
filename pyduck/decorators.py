@@ -5,19 +5,20 @@ Created on 2011-09-23
 
 @author: xion
 '''
+from pyduck.utils import is_function
 import functools
 import inspect
 import itertools
 
 
-###########################################################
-# @expects function decorator
-
 class Any(object):
-    ''' Marker symbol used with @expects decorator.
+    ''' Marker symbol used with decorators.
     Accepts any type of Python object. '''
     pass
 
+
+###########################################################
+# @expects function decorator
 
 class ArgumentSpec(dict):
     ''' Slightly customized version of standard Python dictionary
@@ -68,8 +69,7 @@ class ExpectedParametersDecorator(object):
         self.is_method = False  # we can't know it yet
     
     def __call__(self, func):
-        is_function = inspect.isfunction(func) or inspect.ismethod(func)
-        if not is_function:
+        if not is_function(func):
             raise TypeError, "@expects can only decorate functions"
         
         self._improve_argument_spec(func)
@@ -121,3 +121,43 @@ class ExpectedParametersDecorator(object):
             
 
 expects = ExpectedParametersDecorator
+
+
+###########################################################
+# @returns function decorator
+
+class ReturnValueDecorator(object):
+    ''' @returns decorator which can be applied to functions.
+    It performs a check whether function's return value
+    matches the interface/type specified in the as decorator's argument.
+    
+    Example:
+    @returns(int)
+    def maybe_throws():
+        die_roll = random.randint(1, 6)
+        return 1 if die_roll > 3 else "foo"
+    '''
+    def __init__(self, retval_spec):
+        self.retval_spec = retval_spec
+        
+    def __call__(self, func):
+        if not is_function(func):
+            raise TypeError, "@returns can only decorate functions"
+
+        @functools.wraps(func)
+        def checked_func(*args, **kwargs):
+            retval = func(*args, **kwargs)
+            self._validate_return_value(retval)
+            
+        return checked_func
+
+    def _validate_return_value(self, retval):
+        ''' Checks whether the specified return values conforms
+        with interface/type that was passed to the decorator. '''
+        if not isinstance(retval, self.retval_spec):
+            expected_type = self.retval_spec.__name__
+            actual_type = type(retval).__name__
+            raise TypeError, "Invalid return value: expected %s, got %s (%r)" % (expected_type, actual_type, retval)
+        
+        
+returns = ReturnValueDecorator
