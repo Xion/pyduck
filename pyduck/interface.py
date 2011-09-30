@@ -24,7 +24,17 @@ class InterfaceMeta(type):
     
     def __instancecheck__(iface, object_or_class): #@NoSelf
         ''' Custom instance checking. Causes isinstance() to verify interface. '''
-        return implements(object_or_class, iface)    
+        return implements(object_or_class, iface)
+    
+    def __subclasscheck__(iface, cls): #@NoSelf
+        ''' Custom subclass checking. Causes issubclass() to verify interface
+        (including verification of "strictness" relation for two interfaces). '''
+        meta = getattr(cls, '__metaclass__', None)
+        if meta and meta == InterfaceMeta:
+            checked_iface = cls
+            return contains(checked_iface, iface)
+        else:
+            return implements(cls, iface)
 
 
 def implements(object_or_class, interface):
@@ -34,6 +44,17 @@ def implements(object_or_class, interface):
         member = getattr(object_or_class, name, None)
         if not (member and inspect.ismethod(member)):
             return False
+        if not method.conforms_with(member):
+            return False
+        
+    return True
+
+def contains(checked_interface, template_interface):
+    ''' Verifies whether first interface is at least as strict as the second one. '''
+    for name, method in template_interface.__dict__.iteritems():
+        if name.startswith('_'):   continue
+        member = getattr(checked_interface, name, None)
+        if not member:  return False
         if not method.conforms_with(member):
             return False
         
