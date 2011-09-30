@@ -128,3 +128,17 @@ def deserialize_data(parser):
 ```
 <code>@expects</code> will check whether function arguments comply to specified _pyduck_ interfaces (or any Python
 types, for that matter). In case of failure, a standard <code>TypeError</code> will be raised.
+
+### @returns decorator
+
+To go along with <code>@expects</code>, there is also a <code>@returns</code> decorator which can automatically verify
+whether function has returned object of correct interface or type:
+
+```python
+from pyduck import returns
+
+@returns(int)
+def number_of_bicycles_in_beijing():
+	# ...
+```
+As with its arguments' counterpart, <code>@returns</code> will raise standard <code>TypeError</code> if the check fails.
