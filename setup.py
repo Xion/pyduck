@@ -16,7 +16,7 @@ setup(name = 'pyduck',
       author = 'Karol Kuczmarski "Xion"',
       author_email = "karol.kuczmarski@gmail.com",
       url = "http://github.com/Xion/pyduck",
-      license = "MIT",
+      license = "BSD",
       classifiers = [
                      'Development Status :: 4 - Beta',
                      'Intended Audience :: Developers',
