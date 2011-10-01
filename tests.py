@@ -275,5 +275,28 @@ class ReturnsDecoratorTests(unittest.TestCase):
         fun2(1)
             
 
+class TypedInterface(Interface):    
+    @expects(int)
+    def method(self, n):    pass
+    
+
+class TypedInterfacesTests(unittest.TestCase):
+    
+    def test_correct_class(self):
+        class CorrectClass(object):
+            @expects(int)
+            def method(self, n):    pass
+        assert implements(CorrectClass, TypedInterface)
+    
+    def test_untyped_class(self):
+        class UntypedClass(object):
+            def method(self, n): pass
+        self.assertFalse(implements(UntypedClass, TypedInterface))
+        
+    def test_wrongly_typed_class(self):
+        class WrongArgTypesClass(object):
+            def method(self, n): pass
+        self.assertFalse(implements(WrongArgTypesClass, TypedInterface))
+
 if __name__ == '__main__':
     unittest.main();

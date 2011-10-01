@@ -56,11 +56,13 @@ class ArgumentSpec(dict):
         if self.allows_varargs and not arg_spec.allows_varargs: return False
         if self.allows_kwargs and not arg_spec.allows_kwargs:   return False
         
-        for arg_name, arg_type in arg_spec:
-            if not arg_name.startswith('_'):    continue
+        arg_names = filter(lambda n: isinstance(n, basestring), arg_spec.keys())
+        for arg_name in arg_names:
+            if arg_name.startswith('_'):    continue
             self_arg_type = self.get(arg_name)
             if self_arg_type is None:   return False
-            if not issubclass(arg_type, self_arg_type):
+            other_arg_type = arg_spec.get(arg_name)
+            if not issubclass(other_arg_type, self_arg_type):
                 return False
             
         return True

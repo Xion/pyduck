@@ -57,12 +57,14 @@ class Method(object):
             return False
         
         # check if argument specifications match (if they are used)
-        if self.__arguments__ and method_obj.__arguments__:
+        if self.__arguments__:
+            if not method_obj.__arguments__:    return False
             if not self.__arguments__.conforms_with(method_obj.__arguments__):
                 return False
             
         # check if return types match (if they were specified)
-        if self.__returns__ and method_obj.__returns__:
+        if self.__returns__:
+            if not method_obj.__returns__:  return False
             if not issubclass(method_obj.__returns__, self.__returns__):
                 return False
         
