@@ -4,8 +4,7 @@ Created on 2011-09-20
 
 @author: xion
 '''
-from pyduck import implements, Interface, InterfaceMeta, expects, Any
-from pyduck.decorators import returns
+from pyduck import implements, Interface, InterfaceMeta, expects, Any, returns, contains
 from pyduck.method import Method
 import unittest
 
@@ -19,6 +18,13 @@ class SimpleInterface(Interface):
     
 class OptArgInterface(Interface):
     def method(self, arg = 0): pass
+    
+class ExtendedInterface(Interface):
+    def method(self): pass
+    def another_method(self, a): pass
+    
+class DifferentInterface(Interface):
+    def different_method(self): pass
 
 
 class SimpleClass(object):
@@ -69,6 +75,12 @@ class AdvancedInterfaceTests(unittest.TestCase):
         class SimpleClassWithOptArg(object):
             def method(self, arg = 1): pass
         assert implements(SimpleClassWithOptArg, OptArgInterface)
+        
+    def test_contains(self):
+        assert contains(SimpleInterface, SimpleInterface)
+        assert contains(ExtendedInterface, SimpleInterface)
+        assert contains(OptArgInterface, SimpleInterface)
+        self.assertFalse(contains(DifferentInterface, SimpleInterface))
         
         
 class MethodObjectTests(unittest.TestCase):
@@ -249,6 +261,18 @@ class ReturnsDecoratorTests(unittest.TestCase):
             def method(self, a, b): pass
         func = lambda: OtherClass()
         self.assertRaises(TypeError, decorator(func))
+        
+    def test_expects_and_returns(self):
+        @expects(int, str)
+        @returns(str)
+        def fun1(a, s): return str(a) + s
+        @returns(str)
+        @expects(int)
+        def fun2(i):    return str(i)
+        self.assertRaises(TypeError, fun1, 1, 1)
+        self.assertRaises(TypeError, fun2, "foo")
+        fun1(1, "foo")
+        fun2(1)
             
 
 if __name__ == '__main__':
