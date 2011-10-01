@@ -41,7 +41,9 @@ def main():
 	pandoc_cmd = ['pandoc', '-o', out_file]
 	pandoc_process = subprocess.Popen(pandoc_cmd, stdin = subprocess.PIPE)
 	pandoc_process.communicate(fixed_input)
-	print "Pandoc returned %i" % pandoc_process.wait()
+	
+	result = pandoc_process.wait()
+	print "Conversion %s." % ("successful" if result == 0 else ("failed (error=%i)" % result))
 	
 
 if __name__ == '__main__':
