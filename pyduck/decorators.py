@@ -44,6 +44,7 @@ class ExpectedParametersDecorator(object):
             self._validate_arguments(args, kwargs)
             return func(*args, **kwargs)
         
+        checked_func.__arguments__ = self.arg_spec
         return checked_func
     
     def _improve_argument_spec(self, func):
@@ -114,6 +115,7 @@ class ReturnValueDecorator(object):
             retval = func(*args, **kwargs)
             self._validate_return_value(retval)
             
+        checked_func.__returns__ = self.retval_spec
         return checked_func
 
     def _validate_return_value(self, retval):
