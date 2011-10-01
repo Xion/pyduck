@@ -10,9 +10,9 @@ from setuptools import setup, find_packages
 
 
 setup(name = 'pyduck',
-      version = '0.2',
+      version = '0.3',
       description = 'Python implementation of Go-like interfaces for more robust duck typing',
-      long_description = open("README.markdown").read(),
+      long_description = open("README.rst").read(),
       author = 'Karol Kuczmarski "Xion"',
       author_email = "karol.kuczmarski@gmail.com",
       url = "http://github.com/Xion/pyduck",
