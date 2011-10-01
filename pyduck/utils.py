@@ -9,10 +9,58 @@ import inspect
 import sys
 
 
+class Any(object):
+    ''' Marker symbol used with argument specifications.
+    Accepts any type of Python object. '''
+    class __metaclass__(type):
+        def __instancecheck__(cls, other): #@NoSelf
+            return True
+        
+
+class ArgumentSpec(dict):
+    ''' Slightly customized version of standard Python dictionary
+    that stores the argument specification for a function.
+    It is a mapping of argument indices and names into pyduck interfaces
+    or Python types. It also handles the cases of variadic arguments and
+    keywords arguments if needed.
+    '''
+    def __init__(self, *args, **kwargs):
+        super(ArgumentSpec, self).__init__(*args, **kwargs)
+        self.allows_varargs = False
+        self.allows_kwargs = False
+    
+    def __getitem__(self, key):
+        try:
+            return super(ArgumentSpec, self).__getitem__(key)
+        except IndexError:
+            if isinstance(key, (int, long)):
+                if self.allows_varargs: return Any
+                raise
+            elif isinstance(key, str):
+                if self.allows_kwargs:  return Any
+                raise
+            raise TypeError, "Invalid argument index or name - must be a number or ANSI string"
+            
+    def __setitem__(self, key, value):
+        if not (isinstance(key, (int, long)) or isinstance(key, str)):
+            raise TypeError, "Invalid argument index or name - must be a number or ANSI string"
+        return super(ArgumentSpec, self).__setitem__(key, value)
+    
+    def conforms_with(self, arg_spec):
+        ''' Checks whether this argument specification conforms with the other one.
+        Conformance means that the set of calls that the other spec permits is no bigger
+        (in terms of inclusion) than the set calls permitted by this spec. '''
+        if not isinstance(arg_spec, ArgumentSpec):
+            raise TypeError, "Expected argument spec, got %s (%r)" % (type(arg_spec).__name__, arg_spec)
+        
+        # ...
+    
+    
 def is_function(func):
     ''' Generalized check for methods and normal functions. '''
     return inspect.ismethod(func) or inspect.isfunction(func)
 
+###########################################################
 
 class Interval(object):
     ''' Represents a numeric interval, closed at either side. '''

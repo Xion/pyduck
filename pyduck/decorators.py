@@ -5,52 +5,15 @@ Created on 2011-09-23
 
 @author: xion
 '''
-from pyduck.utils import is_function
+from pyduck.utils import is_function, ArgumentSpec, Any
 import functools
 import inspect
 import itertools
 
 
-class Any(object):
-    ''' Marker symbol used with decorators.
-    Accepts any type of Python object. '''
-    class __metaclass__(type):
-        def __instancecheck__(cls, other): #@NoSelf
-            return True
-
 
 ###########################################################
-# @expects function decorator
-
-class ArgumentSpec(dict):
-    ''' Slightly customized version of standard Python dictionary
-    that stores the argument specification for a function.
-    It is a mapping of argument indices and names into pyduck interfaces
-    or Python types. It also handles the cases of variadic arguments and
-    keywords arguments if needed.
-    '''
-    def __init__(self, *args, **kwargs):
-        super(ArgumentSpec, self).__init__(*args, **kwargs)
-        self.allows_varargs = False
-        self.allows_kwargs = False
-    
-    def __getitem__(self, key):
-        try:
-            return super(ArgumentSpec, self).__getitem__(key)
-        except IndexError:
-            if isinstance(key, (int, long)):
-                if self.allows_varargs: return Any
-                raise
-            elif isinstance(key, str):
-                if self.allows_kwargs:  return Any
-                raise
-            raise TypeError, "Invalid argument index or name - must be a number or ANSI string"
-            
-    def __setitem__(self, key, value):
-        if not (isinstance(key, (int, long)) or isinstance(key, str)):
-            raise TypeError, "Invalid argument index or name - must be a number or ANSI string"
-        return super(ArgumentSpec, self).__setitem__(key, value)
-            
+# @expects function decorator            
 
 class ExpectedParametersDecorator(object):
     ''' @expects decorator which can be applied to functions.
