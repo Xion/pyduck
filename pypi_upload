@@ -1,0 +1,6 @@
+#!/bin/bash
+
+rm README.rst
+./convert_github_md.py README.markdown
+
+./setup.py register upload
