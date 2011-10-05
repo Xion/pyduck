@@ -29,8 +29,7 @@ class InterfaceMeta(type):
     def __subclasscheck__(iface, cls): #@NoSelf
         ''' Custom subclass checking. Causes issubclass() to verify interface
         (including verification of "strictness" relation for two interfaces). '''
-        meta = getattr(cls, '__metaclass__', None)
-        if meta and meta == InterfaceMeta:
+        if isinterface(cls):
             checked_iface = cls
             return contains(checked_iface, iface)
         else:
@@ -59,6 +58,11 @@ def contains(checked_interface, template_interface):
             return False
         
     return True
+
+def isinterface(obj):
+    ''' Checks whether given object is a pyduck interface. '''
+    meta = getattr(obj, '__metaclass__', None)
+    return meta is not None and meta == InterfaceMeta
 
 
 ###############################################################################

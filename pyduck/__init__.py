@@ -5,5 +5,5 @@ pyduck
 @author: Karol Kuczmarski "Xion" 
 @license: MIT
 '''
-from interface import InterfaceMeta, Interface, implements, contains
+from interface import InterfaceMeta, Interface, implements, contains, isinterface
 from decorators import Any, expects, returns
