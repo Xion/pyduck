@@ -25,12 +25,17 @@ class Method(object):
         self.name = actual_method.func_name
         self.has_varargs = varargs_name is not None
         self.has_kwargs = kwargs_name is not None
-        self.__arguments__ = getattr(actual_method, '__arguments__', None)  # present if @expects was used
-        self.__returns__ = getattr(actual_method, '__returns__', None)    # present if @returns was used
+        self._arguments = getattr(actual_method, '_arguments', None)  # present if @expects was used
+        self._returns = getattr(actual_method, '_returns', None)    # present if @returns was used
         
         fixed_arglist = not (self.has_varargs or self.has_kwargs)
         self.max_args = len(arg_names) if fixed_arglist else None
         self.min_args = len(arg_names) - len(default_values)
+        
+    def is_checked(self):
+        ''' Returns True if the method's arguments or return value are checked
+        against a specification. This happens if @expects or @returns decorators are used. '''
+        return self._arguments is not None or self._returns is not None
         
     def conforms_with(self, method):
         ''' Checks whether given method is compatible with method signature
@@ -57,15 +62,15 @@ class Method(object):
             return False
         
         # check if argument specifications match (if they are used)
-        if self.__arguments__:
-            if not method_obj.__arguments__:    return False
-            if not self.__arguments__.conforms_with(method_obj.__arguments__):
+        if self._arguments:
+            if not method_obj._arguments:    return False
+            if not self._arguments.conforms_with(method_obj._arguments):
                 return False
             
         # check if return types match (if they were specified)
-        if self.__returns__:
-            if not method_obj.__returns__:  return False
-            if not issubclass(method_obj.__returns__, self.__returns__):
+        if self._returns:
+            if not method_obj._returns:  return False
+            if not issubclass(method_obj._returns, self._returns):
                 return False
         
         return True

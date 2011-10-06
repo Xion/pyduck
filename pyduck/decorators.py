@@ -11,6 +11,20 @@ import inspect
 import itertools
 
 
+def transfer_specs(from_func, to_func):
+    ''' Utility function that transfers the specifications
+    from one (decorated) function to another. Used by @expects
+    and @returns decorators.
+    '''
+    spec_attrs = ['_arguments', '_returns']
+    
+    attrs = filter(lambda a: hasattr(from_func, a), spec_attrs)
+    for attr in attrs:
+        from_func_value = getattr(from_func, attr)
+        setattr(to_func, attr, from_func_value)
+        
+    return to_func
+
 
 ###########################################################
 # @expects function decorator            
@@ -44,7 +58,8 @@ class ExpectedParametersDecorator(object):
             self._validate_arguments(args, kwargs)
             return func(*args, **kwargs)
         
-        checked_func.__arguments__ = self.arg_spec
+        transfer_specs(func, checked_func)
+        checked_func._arguments = self.arg_spec
         return checked_func
     
     def _improve_argument_spec(self, func):
@@ -115,7 +130,8 @@ class ReturnValueDecorator(object):
             retval = func(*args, **kwargs)
             self._validate_return_value(retval)
             
-        checked_func.__returns__ = self.retval_spec
+        transfer_specs(func, checked_func)
+        checked_func._returns = self.retval_spec
         return checked_func
 
     def _validate_return_value(self, retval):
