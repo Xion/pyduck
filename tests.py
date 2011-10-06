@@ -7,6 +7,7 @@ Created on 2011-09-20
 from pyduck import implements, Interface, InterfaceMeta, expects, Any, returns, contains
 from pyduck.method import Method
 import unittest
+from pyduck.wrappers import enforce
 
 
 class SimpleInterfaceByMeta(object):
@@ -318,6 +319,35 @@ class TypedInterfacesTests(unittest.TestCase):
             @returns(str)
             def method(self):   return ""
         self.assertFalse(implements(WrongReturnTypeClass, TypedReturnInterface))
+        
+        
+class EnforceTests(unittest.TestCase):
+    
+    def test_enforced_expects(self):
+        class Class(object):
+            def method(self, n):
+                self.n = n
+        obj = Class()
+        wrapped_obj = enforce(TypedArgsInterface).on(obj)
+        wrapped_obj.method(1)
+        assert wrapped_obj.n == 1
+        self.assertRaises(TypeError, wrapped_obj.method, "foo")
+        
+    def test_enforced_returns_on_correct_object(self):
+        class Class(object):
+            def method(self):
+                return 1
+        obj = Class()
+        wrapped_obj = enforce(TypedReturnInterface).on(obj)
+        wrapped_obj.method()
+        
+    def test_enforced_returns_on_incorrect_object(self):
+        class Class(object):
+            def method(self):
+                return "foo"
+        obj = Class()
+        wrapped_obj = enforce(TypedReturnInterface).on(obj)
+        self.assertRaises(TypeError, wrapped_obj.method)
 
 
 

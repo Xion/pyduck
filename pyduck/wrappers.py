@@ -7,6 +7,8 @@ Created on 2011-10-05
 @author: xion
 '''
 from pyduck.interface import isinterface
+from pyduck.decorators import ExpectedParametersDecorator, ReturnValueDecorator
+from pyduck.method import Method
 
 
 class EnforceWrapper(object):
@@ -25,7 +27,32 @@ class EnforceWrapper(object):
         return self.on(obj)
 
     def on(self, obj):
-        pass
+        ''' Wraps specified object's methods in @expects/@returns decorators,
+        according to those defined on interface's method.
+        '''
+        for method_name, method in self._interface.__dict__.iteritems():
+            if not isinstance(method, Method):  continue
+            if not method.is_checked():         continue
+            
+            obj_method = getattr(obj, method_name, None)
+            if not obj_method:
+                exc_tuple = (obj, method_name, self._interface.__name__)
+                raise TypeError, "Object (%r) does have required method %s of interface %s" % exc_tuple
+            
+            # decorate with @returns
+            if method._returns:
+                returns_decorator = ReturnValueDecorator(method._returns)
+                obj_method = returns_decorator(obj_method)
+            
+            # decorate with @expects
+            if method._arguments:
+                expects_decorator = ExpectedParametersDecorator()
+                expects_decorator.arg_spec = method._arguments
+                obj_method = expects_decorator(obj_method)
+                
+            setattr(obj, method_name, obj_method)
+            
+        return obj
 
 
 def enforce(iface, obj = None):
