@@ -348,6 +348,25 @@ class EnforceTests(unittest.TestCase):
         obj = Class()
         wrapped_obj = enforce(TypedReturnInterface).on(obj)
         self.assertRaises(TypeError, wrapped_obj.method)
+        
+    def test_enforce_syntax(self):
+        class Class(object):
+            def method(self):
+                return 1
+            
+        wrapped_obj = enforce(TypedReturnInterface).on(Class())
+        wrapped_obj.method()
+        wrapped_obj = enforce(TypedReturnInterface)(Class())
+        wrapped_obj.method()
+        wrapped_obj = enforce(TypedReturnInterface, Class())
+        wrapped_obj.method()
+        
+        obj = Class() ; enforce(TypedReturnInterface).on(obj)
+        obj.method()
+        obj = Class() ; enforce(TypedReturnInterface)(obj)
+        obj.method()
+        obj = Class() ; enforce(TypedReturnInterface, obj)
+        obj.method()
 
 
 
