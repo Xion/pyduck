@@ -45,7 +45,7 @@ class ExpectedParametersDecorator(object):
         for i, arg in enumerate(args):
             self.arg_spec[i] = arg
         self.arg_spec.update(kwargs)
-        self.is_method = False  # we can't know it yet
+        self.omit_self = False  # we don't know yet what function we'll decorate
     
     def __call__(self, func):
         if not is_function(func):
@@ -58,7 +58,7 @@ class ExpectedParametersDecorator(object):
             self._validate_arguments(args, kwargs)
             return func(*args, **kwargs)
         
-        transfer_specs(func, checked_func)
+        checked_func = transfer_specs(func, checked_func)
         checked_func._arguments = self.arg_spec
         return checked_func
     
@@ -70,8 +70,11 @@ class ExpectedParametersDecorator(object):
         in function call.
         '''
         arg_names, varargs_name, kwargs_name, _ = inspect.getargspec(func)
-        if len(arg_names) > 0 and arg_names[0] == 'self':
-            self.is_method = True
+        
+        first_arg_is_self = len(arg_names) > 0 and arg_names[0] == 'self'
+        is_unbound_method = not inspect.ismethod(func) and first_arg_is_self
+        if is_unbound_method:
+            self.omit_self = True
             arg_names = arg_names[1:]   # omit 'self'
 
         if len(arg_names) > len(self.arg_spec):
@@ -88,7 +91,7 @@ class ExpectedParametersDecorator(object):
     def _validate_arguments(self, varargs, kwargs):
         ''' Checks whether specified arguments of function conform with
         the specification which was passed earlier to the decorator. '''
-        if self.is_method:
+        if self.omit_self:
             varargs = varargs[1:]   # omit 'self'
             
         all_args = itertools.chain(enumerate(varargs), kwargs.iteritems())
@@ -130,7 +133,7 @@ class ReturnValueDecorator(object):
             retval = func(*args, **kwargs)
             self._validate_return_value(retval)
             
-        transfer_specs(func, checked_func)
+        checked_func = transfer_specs(func, checked_func)
         checked_func._returns = self.retval_spec
         return checked_func
 
