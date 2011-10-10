@@ -81,7 +81,8 @@ class ExpectedParametersDecorator(object):
         is_unbound_method = not inspect.ismethod(func) and first_arg_is_self
         if is_unbound_method:
             self.omit_self = True
-            arg_names = arg_names[1:]   # omit 'self'
+        if first_arg_is_self:
+            arg_names = arg_names[1:]   # 'self' is not part of argument spec
 
         if len(arg_names) > len(self.arg_spec):
             raise TypeError, "Expected a function with %s argument(s), found only %s" % (len(self.arg_spec), len(arg_names))
