@@ -27,7 +27,12 @@ def transfer_specs(from_func, to_func):
 
 
 ###########################################################
-# @expects function decorator            
+# @expects function decorator
+
+class ArgumentError(TypeError):
+    ''' Exception raised when arguments passed to function
+    do not agree with specification given to @expects decorator. '''
+    pass
 
 class ExpectedParametersDecorator(object):
     ''' @expects decorator which can be applied to functions.
@@ -101,7 +106,7 @@ class ExpectedParametersDecorator(object):
             if not isinstance(arg, expected):
                 expected_type = expected.__name__
                 actual_type = type(arg).__name__
-                raise TypeError, "Invalid argument: expected %s, got %s (%r)" % (expected_type, actual_type, arg)
+                raise ArgumentError, "Invalid argument: expected %s, got %s (%r)" % (expected_type, actual_type, arg)
             
 
 expects = ExpectedParametersDecorator
