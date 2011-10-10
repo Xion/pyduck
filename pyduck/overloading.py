@@ -19,7 +19,7 @@ def overload(first, *rest):
     if not first:
         raise ValueError, "No functions passed to overload()"
     
-    typed_funcs = __reduce_to_function_list([first] + rest)
+    typed_funcs = __reduce_to_function_list([first] + list(rest))
     return __create_overloaded_function(typed_funcs)
 
     
@@ -28,7 +28,7 @@ def __reduce_to_function_list(a_list):
     for item in a_list:
         if __is_typed_function(item):
             res.append(item)
-        if hasattr(item, '__iter__'):
+        elif hasattr(item, '__iter__'):
             functions_on_list = filter(__is_typed_function, item)
             if len(functions_on_list) < len(item):
                 raise TypeError, "List should contain only functions"
@@ -68,7 +68,7 @@ def __create_overloaded_function(typed_functions):
             expects_decorator.arg_spec = arg_spec
             try:
                 expects_decorator._improve_argument_spec(func)
-                expects_decorator._validate_arguments(*args, **kwargs)
+                expects_decorator._validate_arguments(args, kwargs)
             except ArgumentError:
                 continue
             
