@@ -66,8 +66,8 @@ def __create_overloaded_function(typed_functions):
             # TODO: encapsulate this mechanism inside EPD class
             expects_decorator = ExpectedParametersDecorator()
             expects_decorator.arg_spec = arg_spec
+            expects_decorator.omit_self = getattr(func, '_has_self', False)
             try:
-                expects_decorator._improve_argument_spec(func)
                 expects_decorator._validate_arguments(args, kwargs)
             except ArgumentError:
                 continue

@@ -16,7 +16,7 @@ def transfer_specs(from_func, to_func):
     from one (decorated) function to another. Used by @expects
     and @returns decorators.
     '''
-    spec_attrs = ['_arguments', '_returns']
+    spec_attrs = ['_arguments', '_has_self', '_returns']
     
     attrs = filter(lambda a: hasattr(from_func, a), spec_attrs)
     for attr in attrs:
@@ -65,6 +65,7 @@ class ExpectedParametersDecorator(object):
         
         checked_func = transfer_specs(func, checked_func)
         checked_func._arguments = self.arg_spec
+        checked_func._has_self = self.omit_self
         return checked_func
     
     def _improve_argument_spec(self, func):
