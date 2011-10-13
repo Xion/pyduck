@@ -46,6 +46,8 @@ class Method(object):
             method_obj = method
         elif inspect.ismethod(method):
             method_obj = Method(method)
+        elif inspect.ismethoddescriptor(method):
+            return False # temporary until we get to catalog all built-in descriptors
         else:
             raise ValueError, "Expected a method, got %r" % method
 
