@@ -6,7 +6,7 @@ Created on 2011-09-21
 
 @author: xion
 '''
-from pyduck.utils import Interval, is_function
+from pyduck.utils import Interval
 import inspect
 
 
@@ -15,7 +15,7 @@ class Method(object):
 
     def __init__(self, actual_method):
         ''' Initializes the object from an actual method. '''
-        if not is_function(actual_method):
+        if not inspect.isroutine(actual_method):
             raise ValueError, "Expected method/function, got %r" % actual_method
         
         arg_desc = inspect.getargspec(actual_method)

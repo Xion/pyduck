@@ -6,8 +6,9 @@ Created on 2011-10-10
 
 @author: xion
 '''
-from pyduck.utils import is_function, ArgumentSpec
 from pyduck.decorators import ExpectedParametersDecorator, ArgumentError
+from pyduck.utils import ArgumentSpec
+import inspect
 
 
 
@@ -45,7 +46,7 @@ def __is_typed_function(arg):
     '''
     if not arg: return False
     
-    if is_function(arg):
+    if inspect.isroutine(arg):
         arg_spec = getattr(arg, '_arguments', None)
         return isinstance(arg_spec, ArgumentSpec)
     

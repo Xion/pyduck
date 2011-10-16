@@ -67,12 +67,6 @@ class ArgumentSpec(dict):
             
         return True
     
-    
-def is_function(func):
-    ''' Generalized check for methods and normal functions. '''
-    return inspect.ismethod(func) or inspect.isfunction(func)
-
-###########################################################
 
 class Interval(object):
     ''' Represents a numeric interval, closed at either side. '''

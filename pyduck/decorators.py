@@ -5,7 +5,7 @@ Created on 2011-09-23
 
 @author: xion
 '''
-from pyduck.utils import is_function, ArgumentSpec, Any
+from pyduck.utils import ArgumentSpec, Any
 import functools
 import inspect
 import itertools
@@ -53,7 +53,7 @@ class ExpectedParametersDecorator(object):
         self.omit_self = False  # we don't know yet what function we'll decorate
     
     def __call__(self, func):
-        if not is_function(func):
+        if not inspect.isroutine(func):
             raise TypeError, "@expects can only decorate functions"
         
         self._improve_argument_spec(func)
@@ -132,7 +132,7 @@ class ReturnValueDecorator(object):
         self.retval_spec = retval_spec
         
     def __call__(self, func):
-        if not is_function(func):
+        if not inspect.isroutine(func):
             raise TypeError, "@returns can only decorate functions"
 
         @functools.wraps(func)
