@@ -75,6 +75,9 @@
 				padding-left: 2px;
 				padding-right: 2px;
 			}
+			code > span.gray {
+				color: #8e9399;
+			}
 			div#page > code {
 				display: block;
 				white-space: pre-line;
@@ -140,7 +143,7 @@
 				that we require for objects to expose. For example, we can introduce a <code>Serializer</code>
 				interface, containing methods for loading and dumping objects from/to some external data format
 				(such as JSON or YAML):</p>
-			<code>from pyduck import Interface
+			<code><span class="gray">from pyduck import Interface</span>
 				
 				class Serializer(<strong>Interface</strong>):
 				&tab;def load(fp): pass
@@ -148,7 +151,7 @@
 				&tab;def dump(obj, fp): pass
 				&tab;def dumps(obj): pass</code>
 			<p>Once there, we can use it in code that is supposed to operate on such serializers:</p>
-			<code>from pyduck import implements
+			<code><span class="gray">from pyduck import implements</span>
 				
 				class Data(object):
 				&tab;def __init__(self, serializer):
@@ -175,7 +178,7 @@
 				to <code>Data.__init__</code> implements desired interface. Such constructs generally look
 				like boilerplate, and <strong>pyduck</strong> helps to eliminate them by offering
 				the <code>@expects</code> decorator.</p>
-			<code>from pyduck import expects
+			<code><span class="gray">from pyduck import expects</span>
 				
 				class Data(object):
 				&tab;<strong>@expects(Serializer)</strong>
@@ -204,9 +207,9 @@
 			<p>To complement the <code>@expects</code> decorator, <strong>pyduck</strong> offers the
 				<code>@returns</code> one. It can automatically verify whether function has returned an object
 				of correct interface or type:</p>
-			<code>from pyduck import returns
+			<code><span class="gray">from pyduck import returns</span>
 				
-				@returns(int)
+				<strong>@returns(int)</strong>
 				def get_random_number():
 				&tab;return 4 # chosen by fair dice roll, guaranteed to be random</code>
 			<p>While the verification is slightly less useful than the one performed by <code>@expects</code>,
