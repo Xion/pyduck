@@ -117,8 +117,8 @@
 			
 			<h1>Interfaces</h1>
 			<p><strong>pyduck</strong> allows to define interfaces which specify a desired set of methods
-				that we want objects to expose. For example, we can introduce a <code>Serializer</code> interface,
-				containing methods for loading and dumping objects from/to some external data format
+				that we require for objects to expose. For example, we can introduce a <code>Serializer</code>
+				interface, containing methods for loading and dumping objects from/to some external data format
 				(such as JSON or YAML):</p>
 			<code>from pyduck import Interface
 				
@@ -136,7 +136,11 @@
 				&tab;&tab;&tab;raise TypeError, "Invalid serializer"
 				&tab;&tab;self._serializer = serializer
 				&tab;# ...</code>
-			<p></p>
+			<p>The trick is that object passed to <code>Data()</code> does <em>not</em> need to know anything
+				about the <code>Serializer</code> interface. The <code>implements</code> test will check
+				for actual methods (<code>load</code>, <code>loads</code>, <code>dump</code>
+				and <code>dumps</code>) rather than any explicit declarations - unlike, for example,
+				<a href="http://docs.python.org/library/abc.html">abstract base classes</a>.</p>
 		</div>
 	</body>
 </html>
