@@ -5,7 +5,6 @@ Created on 2011-09-27
 
 @author: xion
 '''
-import inspect
 import sys
 
 
@@ -62,10 +61,18 @@ class ArgumentSpec(dict):
             self_arg_type = self.get(arg_name)
             if self_arg_type is None:   return False
             other_arg_type = arg_spec.get(arg_name)
-            if not issubclass(other_arg_type, self_arg_type):
+            if not self._is_subtype(other_arg_type, self_arg_type):
                 return False
             
         return True
+    
+    @staticmethod
+    def _is_subtype(other_type, this_type):
+        ''' Generalized function for checking whether one type is a subtype
+        of other one. It takes all pyduck features into account, e.g. using
+        boolean predicates instead of actual types. '''
+        # TODO: handle boolean predicates
+        return issubclass(other_type, this_type)
     
 
 class Interval(object):

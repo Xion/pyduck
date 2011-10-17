@@ -32,7 +32,10 @@ def transfer_specs(from_func, to_func):
 class ArgumentError(TypeError):
     ''' Exception raised when arguments passed to function
     do not agree with specification given to @expects decorator. '''
-    pass
+    def __init__(self, message, argument = None, expected = None):
+        super(ArgumentError, self).__init__(message)
+        self.argument = argument
+        self.expected = expected
 
 class ExpectedParametersDecorator(object):
     ''' @expects decorator which can be applied to functions.
@@ -85,7 +88,8 @@ class ExpectedParametersDecorator(object):
             arg_names = arg_names[1:]   # 'self' is not part of argument spec
 
         if len(arg_names) > len(self.arg_spec):
-            raise TypeError, "Expected a function with %s argument(s), found only %s" % (len(self.arg_spec), len(arg_names))
+            raise TypeError("Expected a function with %s argument(s), found only %s"
+                            % (len(self.arg_spec), len(arg_names)))
          
         for i, arg_name in enumerate(arg_names):
             arg_type = self.arg_spec.get(i) or self.arg_spec.get(arg_name)
@@ -105,10 +109,19 @@ class ExpectedParametersDecorator(object):
         for key, arg in all_args:
             expected = self.arg_spec[key]
             if expected is Any: continue
-            if not isinstance(arg, expected):
+            if not self._is(arg, expected):
                 expected_type = expected.__name__
                 actual_type = type(arg).__name__
-                raise ArgumentError, "Invalid argument: expected %s, got %s (%r)" % (expected_type, actual_type, arg)
+                raise ArgumentError("Invalid argument: expected %s, got %s (%r)" % (expected_type, actual_type, arg),
+                                    argument = arg, expected = expected)
+            
+    @staticmethod
+    def _is(obj, type_):
+        ''' Generalized functions for checking whether an object
+        is an instance of given type. It supports all necessary pyduck features
+        that are relevant here, such as boolean predicates. '''
+        # TODO: add support for boolean predicates
+        return isinstance(obj, type_)
             
 
 expects = ExpectedParametersDecorator
@@ -116,6 +129,14 @@ expects = ExpectedParametersDecorator
 
 ###########################################################
 # @returns function decorator
+
+class ReturnValueError(TypeError):
+    ''' Exception raised when value returned by function
+    does not agree with specification given to @returns decorator. '''
+    def __init__(self, message, returned = None, expected = None):
+        super(ReturnValueError, self).__init__(message)
+        self.returned = returned
+        self.expected = expected
 
 class ReturnValueDecorator(object):
     ''' @returns decorator which can be applied to functions.
@@ -150,7 +171,8 @@ class ReturnValueDecorator(object):
         if not isinstance(retval, self.retval_spec):
             expected_type = self.retval_spec.__name__
             actual_type = type(retval).__name__
-            raise TypeError, "Invalid return value: expected %s, got %s (%r)" % (expected_type, actual_type, retval)
+            raise ReturnValueError("Invalid return value: expected %s, got %s (%r)" % (expected_type, actual_type, retval),
+                                   returned = retval, expected = self.retval_spec)
         
         
 returns = ReturnValueDecorator
