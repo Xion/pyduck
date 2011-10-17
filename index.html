@@ -29,8 +29,10 @@
 			
 			code {
 				background: none repeat scroll 0 0 #eeeeee;
-				padding: 7px;
 				font-family: monospace;
+			}
+			div#page > code {
+				padding: 7px;
 				line-height: 1.2em;
 			}
 		</style>
@@ -43,7 +45,12 @@
 			<p>Source code and issue tracking for <strong>pyduck</strong> can be found at
 				<a href="http://github.com/Xion/pyduck">GitHub</a>.</p>
 				
-			
+			<h1>Features</h1>
+			<ul>
+				<li>interfaces which do not need to be explicitly declared (similar to Go language)</li>
+				<li>automatic interface/type checking for function arguments (<code>@expects</code>)</li>
+				<li>automatic interface/type checking for return values (<code>@returns</code>)</li>
+			</ul>
 		</div>
 	</body>
 </html>
