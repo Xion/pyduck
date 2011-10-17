@@ -52,16 +52,34 @@
 				display: inline;
 				background: none repeat scroll 0 0 #eeeeee;
 				font-family: monospace;
-				margin: 4px 2px;
+				margin: 4px 0;
+				padding-left: 2px;
+				padding-right: 2px;
 			}
 			div#page > code {
 				display: block;
 				white-space: pre-line;
 				padding: 10px 15px;
 				line-height: 1.2em;
-				margin: 10px;
+				margin: 10px -20px;
+				padding-left: 30px;
+			}
+			div#page > code span.indent {
+				padding-left: 2em;
 			}
 		</style>
+		<script type="text/javascript">
+			window.onload = function() {
+				var codeBlocks = document.querySelectorAll("div#page > code");
+				for (var idx in codeBlocks) {
+					if (codeBlocks.hasOwnProperty(idx)) {
+						var cb = codeBlocks[idx];
+						console.log(cb.innerHTML);
+						cb.innerHTML = cb.innerHTML.replace(/&amp;tab;/g, "<span class='indent'></span>");
+					}
+				}
+			}
+		</script>
 	</head>
 	<body>
 		<a href="http://github.com/Xion/pyduck">
@@ -97,7 +115,28 @@
 			
 			<hr noshade="true"/>
 			
-			
+			<h1>Interfaces</h1>
+			<p><strong>pyduck</strong> allows to define interfaces which specify a desired set of methods
+				that we want objects to expose. For example, we can introduce a <code>Serializer</code> interface,
+				containing methods for loading and dumping objects from/to some external data format
+				(such as JSON or YAML):</p>
+			<code>from pyduck import Interface
+				
+				class Serializer(Interface):
+				&tab;def load(fp): pass
+				&tab;def loads(s): pass
+				&tab;def dump(obj, fp): pass
+				&tab;def dumps(obj): pass</code>
+			<p>Once there, we can use it in code that is supposed to operate on such serializers:</p>
+			<code>from pyduck import implements
+				
+				class Data(object):
+				&tab;def __init__(self, serializer):
+				&tab;&tab;if not implements(serializer, Serializer):
+				&tab;&tab;&tab;raise TypeError, "Invalid serializer"
+				&tab;&tab;self._serializer = serializer
+				&tab;# ...</code>
+			<p></p>
 		</div>
 	</body>
 </html>
