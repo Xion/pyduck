@@ -142,7 +142,7 @@
 				for actual methods (<code>load</code>, <code>loads</code>, <code>dump</code>
 				and <code>dumps</code>) rather than any explicit declarations - unlike, for example,
 				<a href="http://docs.python.org/library/abc.html">abstract base classes</a>.</p>
-			<p>To be more specific, when deciding whether object implements an interface,
+			<p>To be more specific: when it comes to deciding whether object implements an interface,
 				<strong>pyduck</strong> will check:</p>
 			<ul>
 				<li>number of arguments</li>
@@ -166,6 +166,19 @@
 				to "fit" into. This translates into <code>implements</code> or <code>isinstance</code> checks when
 				function is called. Should any of those checks fail, <code>pyduck.ArgumentError</code>
 				(derived from <code>TypeError</code>) is raised.</p>
+				
+			<h1>Function overloading</h1>
+			<p>In Python, it's quite common pattern to provide slightly different logic depending on arguments
+				the function was called with:</p>
+			<code># TODO: insert the as_json() example from the GitHub issue about overload()</code>
+			<p>This is another case of boilerplate <code>if</code>s cluttering the function's code.
+				To eliminate them, <strong>pyduck</strong> allows to split the function into distinct
+				routines - each having appropriate <code>@expects</code> declaration - and then combine
+				into single "overloaded" function:</p>
+			<code># TODO: as_json() using @expects and overload()</code>
+			<p>When such function is called, <strong>pyduck</strong> will check how well the <code>@expects</code> 
+				declarations are matched against actual arguments. The call is then dispatched to version
+				that "wins" the overload resolution.</p>
 		</div>
 	</body>
 </html>
