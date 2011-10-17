@@ -6,7 +6,7 @@
 		<style type="text/css">
 			body {
 				margin: 0;
-				font-family: serif;
+				font-family: 'Droid Serif', 'Georgia', 'DejaVu Serif', serif;
 				font-size: 13pt;
 			}
 			div#page {
@@ -15,7 +15,7 @@
 			}
 			
 			img#github_corner {
-				position: absolute;
+				position: fixed;
 				border: 0 none;
 				margin: 0;
 				top: 0;
@@ -24,6 +24,16 @@
 			
 			header#title {
 				font-size: 64pt;
+				margin: 25px 0;
+			}
+
+			
+			a {
+				color: #5555ff;
+				text-decoration: underline;
+			}
+			a:hover {
+				color: #bb0000;
 			}
 
 			hr {
@@ -52,6 +62,7 @@
 				display: inline;
 				background: none repeat scroll 0 0 #eeeeee;
 				font-family: monospace;
+				font-size: 0.9em;
 				margin: 4px 0;
 				padding-left: 2px;
 				padding-right: 2px;
@@ -107,7 +118,7 @@
 			<p>Install using either <strong>pip</strong> or <strong>easy_install</strong>:</p>
 			<code>pip install pyduck</code>
 			<code>easy_install pyduck</code>
-			<p>or -if you want the bleeding edge - download the latest version from
+			<p>or - if you want the bleeding edge - download the latest version from
 				<a href="http://github.com/Xion/pyduck">GitHub</a>:</p>
 			<code>git clone git://github.com/Xion/pyduck.git
 				cd pyduck
@@ -137,7 +148,7 @@
 				&tab;&tab;&tab;raise TypeError, "Invalid serializer"
 				&tab;&tab;self._serializer = serializer
 				&tab;# ...</code>
-			<p>The trick is that object passed to <code>Data()</code> does <em>not</em> need to know anything
+			<p>The trick is that object passed to <code>Data.__init__</code> does <em>not</em> need to know anything
 				about the <code>Serializer</code> interface. The <code>implements</code> test will check
 				for actual methods (<code>load</code>, <code>loads</code>, <code>dump</code>
 				and <code>dumps</code>) rather than any explicit declarations - unlike, for example,
@@ -145,7 +156,8 @@
 			<p>To be more specific: when it comes to deciding whether object implements an interface,
 				<strong>pyduck</strong> will check:</p>
 			<ul>
-				<li>number of arguments</li>
+				<li>whether method of appropriate name exists</li>
+				<li>number of its arguments</li>
 				<li>arguments' kind (normal, variadic (<code>*args</code>) or keyword (<code>**kwargs</code>))</li>
 				<li>whether they are optional or not</li>
 			</ul>
@@ -173,12 +185,27 @@
 			<code># TODO: insert the as_json() example from the GitHub issue about overload()</code>
 			<p>This is another case of boilerplate <code>if</code>s cluttering the function's code.
 				To eliminate them, <strong>pyduck</strong> allows to split the function into distinct
-				routines - each having appropriate <code>@expects</code> declaration - and then combine
+				routines - each having appropriate <code>@expects</code> declaration - and then combine them
 				into single "overloaded" function:</p>
 			<code># TODO: as_json() using @expects and overload()</code>
 			<p>When such function is called, <strong>pyduck</strong> will check how well the <code>@expects</code> 
 				declarations are matched against actual arguments. The call is then dispatched to version
 				that "wins" the overload resolution.</p>
+				
+			<h1>Validating return values (<code>@returns</code>)</h1>
+			<p>To complement the <code>@expects</code> decorator, <strong>pyduck</strong> offers the
+				<code>@returns</code> one. It can automatically verify whether function has returned an object
+				of correct interface or type:</p>
+			<code>from pyduck import returns
+				
+				@returns(int)
+				def get_random_number():
+				&tab;return 4 # chosen by fair dice roll, guaranteed to be random</code>
+			<p>While the verification is slightly less useful than the one performed by <code>@expects</code>,
+				<code>@returns</code> serves well as a visual aid: it concisely informs the callers
+				what they can expect for function to return. And in case changes in function code cause
+				the <code>@returns</code> contract to break, <code>pyduck.ReturnValueError</code>
+				(derived from <code>TypeError</code>) will be raised.</p>
 		</div>
 	</body>
 </html>
