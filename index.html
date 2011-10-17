@@ -14,6 +14,13 @@
 				margin: 20px auto;
 			}
 			
+			hr {
+				margin: 30px auto;
+				width: 80%;
+				height: 5px;
+				background-color: #aaaaaa;
+			}
+			
 			h1 {
 				font-size: 23pt;
 				font-weight: normal;
@@ -46,17 +53,19 @@
 	</head>
 	<body>
 		<div id="page">
-			<h1 style="font-size: 60pt">pyduck</h1>
+			<header style="font-size: 60pt">pyduck</header>
 			<p><strong>pyduck</strong> is an utility framework for easier, more robust and effective usage
-			of one of Python's defining language traits: <em>duck typing</em>.</p>
+			of one of Python's defining language traits: <em>duck typing</em>. It enhances the Python language
+			with several useful features.</p>
 			<p>Source code and issue tracking for <strong>pyduck</strong> can be found at
 				<a href="http://github.com/Xion/pyduck">GitHub</a>.</p>
 				
 			<h1>Features</h1>
 			<ul>
-				<li>interfaces which do not need to be explicitly declared (similar to Go language)</li>
-				<li>automatic interface/type checking for function arguments (<code>@expects</code>)</li>
-				<li>automatic interface/type checking for return values (<code>@returns</code>)</li>
+				<li><strong>interfaces</strong> which do not need to be explicitly declared (similar to Go language)</li>
+				<li>automatic <strong>interface/type checking</strong> for function arguments (<code>@expects</code>)</li>
+				<li><strong>function overloading</strong> based on interfaces/types of arguments</li>
+				<li>automatic interface/type checking for function return values (<code>@returns</code>)</li>
 			</ul>
 			
 			<h1>Installing pyduck</h1>
@@ -69,6 +78,10 @@
 				cd pyduck
 				python setup.py develop</code>
 			This way you can <code>git pull</code> changes without having to run <strong>setup.py</strong> again.
+			
+			<hr noshade="true"/>
+			
+			
 		</div>
 	</body>
 </html>
