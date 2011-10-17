@@ -8,6 +8,7 @@
 				margin: 0;
 				font-family: 'Droid Serif', 'Georgia', 'DejaVu Serif', serif;
 				font-size: 13pt;
+				color: #1e2329
 			}
 			div#page {
 				width: 720px;
@@ -25,6 +26,13 @@
 			header#title {
 				font-size: 64pt;
 				margin: 25px 0;
+			}
+			
+			footer {
+				margin-top: 30px;
+				text-align: right;
+				font-size: small;
+				color: #7e8389;
 			}
 
 			
@@ -205,7 +213,9 @@
 				<code>@returns</code> serves well as a visual aid: it concisely informs the callers
 				what they can expect for function to return. And in case changes in function code cause
 				the <code>@returns</code> contract to break, <code>pyduck.ReturnValueError</code>
-				(derived from <code>TypeError</code>) will be raised.</p>
+				(derived from <code>TypeError</code>) will be raised when returning from function call	.</p>
+				
+			<footer>&copy; Copyright 2011 <a href="http://github.com/Xion">Karol Kuczmarski</a></footer>
 		</div>
 	</body>
 </html>
