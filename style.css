@@ -23,6 +23,9 @@ header#title {
 	font-size: 64pt;
 	margin: 25px 0;
 }
+img#duck {
+	float: right;
+}
 
 footer {
 	margin-top: 30px;

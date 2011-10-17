@@ -24,7 +24,10 @@
 			<img id="github_corner" alt="Fork me on GitHub" src="img/github-forkme-corner.png"/>
 		</a>
 		<div id="page">
-			<header id="title">pyduck</header>
+			<header id="title">
+				<img id="duck" alt="" title="A duck (since it quacks like a duck)" src="img/duck.png"/>
+				pyduck
+			</header>
 			
 			<p><strong>pyduck</strong> is an utility framework for easier, more robust and effective usage
 			of one of Python's defining language traits: <em>duck typing</em>. It enhances the Python language
@@ -108,12 +111,41 @@
 			<h1>Function overloading</h1>
 			<p>In Python, it's quite common pattern to provide slightly different logic depending on arguments
 				the function was called with:</p>
-			<code># TODO: insert the as_json() example from the GitHub issue about overload()</code>
+			<code>def as_json(value):
+			    &tab;if isinstance(value, basestring):
+			    &tab;&tab;return '"%s"' % str(value)
+			    &tab;if isinstance(value, list):
+			    &tab;&tab;json_list = map(as_json, value)
+			    &tab;&tab;return "[%s]" % str.join(",", json_list)
+			    &tab;if isinstance(value, dict):
+			    &tab;&tab;json_dict = dict( ((as_json(str(k)), as_json(v))
+			    &tab;&tab;&tab;&tab;&tab;&tab;&tab;&tab;for k, v in value.iteritems()) )
+			    &tab;&tab;json_dict_string = str.join(",",
+			    &tab;&tab;&tab;&tab;&tab;&tab;&tab;&tab;("%s: %s" for k, v in json_dict.iteritems()))
+			    &tab;&tab;return "{%s}" % json_dict_string
+			    &tab;# etc.</code>
 			<p>This is another case of boilerplate <code>if</code>s cluttering the function's code.
 				To eliminate them, <strong>pyduck</strong> allows to split the function into distinct
 				routines - each having appropriate <code>@expects</code> declaration - and then combine them
 				into single "overloaded" function:</p>
-			<code># TODO: as_json() using @expects and overload()</code>
+			<code>@expects(basestring)
+				def __string_as_json(value):
+				&tab;return '"%s"' % str(value)
+				
+				@expects(list)
+				def __list_as_json(value):
+				&tab;json_list = map(as_json, value)
+				&tab;return "[%s]" % str.join(",", json_list)
+				
+				@expects(dict)
+				def __dict_as_json(value)
+				&tab;json_dict = dict( ((as_json(str(k)), as_json(v))
+			    &tab;&tab;&tab;&tab;&tab;&tab;&tab;for k, v in value.iteritems()) )
+			    &tab;json_dict_string = str.join(",",
+			    &tab;&tab;&tab;&tab;&tab;&tab;&tab;("%s: %s" for k, v in json_dict.iteritems()))
+			    &tab;return "{%s}" % json_dict_string
+			    
+			    as_json = <strong>overload</strong>(__string_as_json, __list_as_json, __dict_as_json)</code>
 			<p>When such function is called, <strong>pyduck</strong> will check how well the <code>@expects</code> 
 				declarations are matched against actual arguments. The call is then dispatched to version
 				that "wins" the overload resolution.</p>
