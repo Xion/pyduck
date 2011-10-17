@@ -7,19 +7,21 @@
 			body {
 				margin: 0;
 				font-family: serif;
+				font-size: 12pt;
 			}
 			div#page {
 				width: 720px;
-				margin: 0 auto;
+				margin: 20px auto;
 			}
 			
 			h1 {
-				font-size: 24pt;
+				font-size: 23pt;
+				font-weight: normal;
 				text-align: left;
 				margin-top: 30px;
 			}
 			h2 {
-				font-size: 18pt;
+				font-size: 17pt;
 				text-align: left;
 			}
 			
@@ -28,18 +30,23 @@
 			}
 			
 			code {
+				display: inline;
 				background: none repeat scroll 0 0 #eeeeee;
 				font-family: monospace;
+				margin: 4px 2px;
 			}
 			div#page > code {
-				padding: 7px;
+				display: block;
+				white-space: pre-line;
+				padding: 10px 15px;
 				line-height: 1.2em;
+				margin: 10px;
 			}
 		</style>
 	</head>
 	<body>
 		<div id="page">
-			<p style="font-size: 60pt">pyduck</p>
+			<h1 style="font-size: 60pt">pyduck</h1>
 			<p><strong>pyduck</strong> is an utility framework for easier, more robust and effective usage
 			of one of Python's defining language traits: <em>duck typing</em>.</p>
 			<p>Source code and issue tracking for <strong>pyduck</strong> can be found at
@@ -51,6 +58,17 @@
 				<li>automatic interface/type checking for function arguments (<code>@expects</code>)</li>
 				<li>automatic interface/type checking for return values (<code>@returns</code>)</li>
 			</ul>
+			
+			<h1>Installing pyduck</h1>
+			<p>Install using either <strong>pip</strong> or <strong>easy_install</strong>:</p>
+			<code>pip install pyduck</code>
+			<code>easy_install pyduck</code>
+			<p>or -if you want the bleeding edge - download the latest version from
+				<a href="http://github.com/Xion/pyduck">GitHub</a>:</p>
+			<code>git clone git://github.com/Xion/pyduck.git
+				cd pyduck
+				python setup.py develop</code>
+			This way you can <code>git pull</code> changes without having to run <strong>setup.py</strong> again.
 		</div>
 	</body>
 </html>
