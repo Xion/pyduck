@@ -22,7 +22,7 @@ def __string_as_json(value):
 def __other_as_json(value):
     return str(value)
 
-as_json = overload(__string_as_json, __iterable_as_json, __other_as_json)
+as_json = overload(__iterable_as_json, __string_as_json, __other_as_json)
 ```
 
 Features
