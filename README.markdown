@@ -27,9 +27,9 @@ as_json = overload(__iterable_as_json, __string_as_json, __other_as_json)
 
 Features
 -
-* **interfaces** which do not need to be explicitly declared (similar to Go language)
-* automatic **interface/type checking** for function arguments
-* **function overloading** based on interfaces/types of arguments
+* _interfaces_ which do not need to be explicitly declared (similar to Go language)
+* automatic _interface/type checking_ for function arguments
+* _function overloading_ based on interfaces/types of arguments
 * automatic interface/type checking for function return values
 
 For more info & the docs, see the [project's webpage](http://xion.github.com/pyduck).
