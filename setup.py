@@ -10,12 +10,12 @@ from setuptools import setup, find_packages
 
 
 setup(name = 'pyduck',
-      version = '0.5',
+      version = '0.5.1',
       description = 'Python implementation of Go-like interfaces for more robust duck typing',
       long_description = open("README.rst").read(),
       author = 'Karol Kuczmarski "Xion"',
       author_email = "karol.kuczmarski@gmail.com",
-      url = "http://github.com/Xion/pyduck",
+      url = "http://xion.github.com/pyduck",
       license = "BSD",
       classifiers = [
                      'Development Status :: 4 - Beta',
