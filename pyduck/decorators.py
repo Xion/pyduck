@@ -96,6 +96,7 @@ class InspectArgumentsDecorator(object):
         @return: Processed arguments, as tuple of (args, kwargs)
         '''
         if self.omit_self:
+            omitted_self = varargs[0]
             varargs = varargs[1:] # omit 'self'
 
         new_varargs = range(0, len(varargs))
@@ -108,6 +109,8 @@ class InspectArgumentsDecorator(object):
                 processed = self._process_argument(spec, arg)
                 dest_args[key] = processed
 
+        if self.omit_self:
+            new_varargs.insert(0, omitted_self)
         return (new_varargs, new_kwargs)
 
 
