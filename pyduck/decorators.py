@@ -27,6 +27,36 @@ def transfer_specs(from_func, to_func):
 
 
 ###########################################################
+# General "inspect arguments" decorator
+
+class InspectArgumentsDecorator(object):
+    ''' A base class for decorators that work by inspecting
+    the arguments passed to functions and optionally altering
+    them. It can be a basis for many useful decorators,
+    like ones that automatically convert between certain
+    types (e.g. database record identifiers and ORM objects),
+    validate arguments (like the @expects decorator), and so on.
+    '''
+    def __init__(self, *args, **kwargs):
+        ''' Constructor. It accepts arbitrary arguments
+        and uses them to build "argument specification"
+        which will be used when calling decorated function.
+        '''
+        self.arg_spec = ArgumentSpec()
+        for i, arg in enumerate(args):
+            self.arg_spec[i] = arg
+        self.arg_spec.update(kwargs)
+        self.omit_self = False
+
+    def __call__(self, func):
+        ''' Performs the actual decoration of given function. '''
+        if not inspect.isroutine(func):
+            raise TypeError, "%s can only decorate functions" % type(self).__name__
+
+        # ...
+
+
+###########################################################
 # @expects function decorator
 
 class ArgumentError(TypeError):
