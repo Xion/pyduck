@@ -98,7 +98,7 @@ class InspectArgumentsDecorator(object):
         if self.omit_self:
             varargs = varargs[1:] # omit 'self'
 
-        new_varargs = []
+        new_varargs = range(0, len(varargs))
         new_kwargs = {}
         arg_collections = [(enumerate(varargs), new_varargs), (kwargs.iteritems(), new_kwargs)]
 
@@ -106,7 +106,7 @@ class InspectArgumentsDecorator(object):
             for key, arg in arg_kvpairs:
                 spec = self.arg_spec[key]
                 processed = self._process_argument(spec, arg)
-                dest_args[key] = prcoessed
+                dest_args[key] = processed
 
         return (new_varargs, new_kwargs)
 
@@ -122,8 +122,6 @@ class InspectArgumentsDecorator(object):
         '''
         # override it in subclassess
         return actual
-
-        
 
 
 ###########################################################
@@ -159,13 +157,15 @@ class ExpectedParametersDecorator(InspectArgumentsDecorator):
         checked_func._has_self = self.omit_self
         return checked_func
 
+    _validate_arguments = InspectArgumentsDecorator._inspect_arguments
+
     def _process_argument(self, expected, actual):
         is_ok = expected is Any or self._is(actual, expected)
         if not is_ok:
             expected_type = expected.__name__
             actual_type = type(actual).__name__
             raise ArgumentError("Invalid argument: expected %s, got %s (%r)" % (expected_type, actual_type, actual),
-                                argument = arg, expected = expected)
+                                argument = actual, expected = expected)
         return actual
     
     @staticmethod
