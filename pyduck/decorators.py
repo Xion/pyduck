@@ -53,7 +53,77 @@ class InspectArgumentsDecorator(object):
         if not inspect.isroutine(func):
             raise TypeError, "%s can only decorate functions" % type(self).__name__
 
-        # ...
+        self._improve_argument_spec(func)
+
+        @functools.wraps(func)
+        def wrapped(*args, **kwargs):
+            args, kwargs = self._inspect_arguments(args, kwargs)
+            return func(*args, **kwargs)
+
+        return wrapped
+
+    def _improve_argument_spec(self, func):
+        ''' Uses the actual arguments of function to improve
+        the argument specification which was saved with the decorator
+        object during its creation. The improved version should work
+        regardless of how the argument was used (positionally or via keyword)
+        in function call.
+        '''
+        arg_names, varargs_name, kwargs_name, _ = inspect.getargspec(func)
+        
+        first_arg_is_self = len(arg_names) > 0 and arg_names[0] == 'self'
+        is_unbound_method = not inspect.ismethod(func) and first_arg_is_self
+        if is_unbound_method:
+            self.omit_self = True
+        if first_arg_is_self:
+            arg_names = arg_names[1:]   # 'self' is not part of argument spec
+
+        if len(arg_names) > len(self.arg_spec):
+            raise TypeError("Expected a function with %s argument(s), found only %s"
+                            % (len(self.arg_spec), len(arg_names)))
+         
+        for i, arg_name in enumerate(arg_names):
+            arg_type = self.arg_spec.get(i) or self.arg_spec.get(arg_name)
+            self.arg_spec[i] = arg_type
+            self.arg_spec[arg_name] = arg_type
+            
+        if varargs_name:    self.arg_spec.allows_varargs = True
+        if kwargs_name:     self.arg_spec.allows_kwargs = True
+
+    def _inspect_arguments(self, varargs, kwargs):
+        ''' Goes through the positional and keywords arguments and invokes
+        the (overridden) _process_argument method.
+        @return: Processed arguments, as tuple of (args, kwargs)
+        '''
+        if self.omit_self:
+            varargs = varargs[1:] # omit 'self'
+
+        new_varargs = []
+        new_kwargs = {}
+        arg_collections = [(enumerate(varargs), new_varargs), (kwargs.iteritems(), new_kwargs)]
+
+        for arg_kvpairs, dest_args in arg_collections:
+            for key, arg in arg_kvpairs:
+                spec = self.arg_spec[key]
+                processed = self._process_argument(spec, arg)
+                dest_args[key] = prcoessed
+
+        return (new_varargs, new_kwargs)
+
+
+    def _process_argument(self, spec, actual):
+        ''' Processes a single argument and returns it (possibly altered).
+        @note: This method should be overriden in subclasses.
+        @param spec: The specification object for this argument,
+                     passed to decorator's constructor
+        @param actual: Actual value for argument, received in call
+                       to decorated function
+        @return: Processed argument which will be passed to decorated functon
+        '''
+        # override it in subclassess
+        return actual
+
+        
 
 
 ###########################################################
