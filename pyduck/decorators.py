@@ -27,10 +27,10 @@ def transfer_specs(from_func, to_func):
 
 
 ###########################################################
-# General "inspect arguments" decorator
+# General "examine arguments" decorator
 
-class InspectArgumentsDecorator(object):
-    ''' A base class for decorators that work by inspecting
+class ExamineArgumentsDecorator(object):
+    ''' A base class for decorators that work by examining
     the arguments passed to functions and optionally altering
     them. It can be a basis for many useful decorators,
     like ones that automatically convert between certain
@@ -57,7 +57,7 @@ class InspectArgumentsDecorator(object):
 
         @functools.wraps(func)
         def wrapped(*args, **kwargs):
-            args, kwargs = self._inspect_arguments(args, kwargs)
+            args, kwargs = self._examine_arguments(args, kwargs)
             return func(*args, **kwargs)
 
         return wrapped
@@ -90,7 +90,7 @@ class InspectArgumentsDecorator(object):
         if varargs_name:    self.arg_spec.allows_varargs = True
         if kwargs_name:     self.arg_spec.allows_kwargs = True
 
-    def _inspect_arguments(self, varargs, kwargs):
+    def _examine_arguments(self, varargs, kwargs):
         ''' Goes through the positional and keywords arguments and invokes
         the (overridden) _process_argument method.
         @return: Processed arguments, as tuple of (args, kwargs)
@@ -138,7 +138,7 @@ class ArgumentError(TypeError):
         self.argument = argument
         self.expected = expected
 
-class ExpectedParametersDecorator(InspectArgumentsDecorator):
+class ExpectedParametersDecorator(ExamineArgumentsDecorator):
     ''' @expects decorator which can be applied to functions.
     It performs a check whether function's actual parameters
     match the specification (in terms of pyduck interfaces)
@@ -160,7 +160,7 @@ class ExpectedParametersDecorator(InspectArgumentsDecorator):
         checked_func._has_self = self.omit_self
         return checked_func
 
-    _validate_arguments = InspectArgumentsDecorator._inspect_arguments
+    _validate_arguments = ExamineArgumentsDecorator._examine_arguments
 
     def _process_argument(self, expected, actual):
         is_ok = expected is Any or self._is(actual, expected)
