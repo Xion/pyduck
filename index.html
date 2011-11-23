@@ -12,7 +12,6 @@
 				for (var idx in codeBlocks) {
 					if (codeBlocks.hasOwnProperty(idx)) {
 						var cb = codeBlocks[idx];
-						console.log(cb.innerHTML);
 						cb.innerHTML = cb.innerHTML.replace(/&amp;tab;/g, "<span class='indent'></span>");
 					}
 				}
